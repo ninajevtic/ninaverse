@@ -1,0 +1,17 @@
+{
+    "name": "ninajevtic/ninaverse",
+    "autoload": {
+        "psr-4": {
+            "Ninajevtic\\Ninaverse\\": "src/",
+            "App\\": "app/",
+            "Core\\": "core/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Nina Jevtić",
+            "email": "jevtic.n.nina@gmail.com"
+        }
+    ],
+    "require": {}
+}
