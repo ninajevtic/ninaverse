@@ -9,7 +9,8 @@ global $documentManager, $router;
 // 3. Kreiraj instancu routera i pokreni rute
 //$router = new Router();
 $router->get('/', function() use ($documentManager) {
-    $documentManager->loadComponent('login', ['csrfToken' => $_SESSION['csrf_token']]);
+    //$documentManager->loadComponent('login', ['csrfToken' => $_SESSION['csrf_token']]);
+    $documentManager->loadComponent('login');
 });
 
 ////$router->post('/login', 'AuthController@login');

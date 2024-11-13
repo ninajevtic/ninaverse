@@ -38,12 +38,40 @@ class Router
         $uri = $this->parseUrl();
 
         // Dodaj ispis za dijagnostiku
+        echo "Request Method: $method<br>";
         echo "Parsed URI: $uri<br>";
         echo "Defined Routes: ";
         print_r($this->routes[$method]);
         echo "<br>";
 
+
+
+
         foreach ($this->routes[$method] as $route => $details) {
+
+//            // Dodaj dijagnostiku za `preg_match`
+//            if (preg_match($route, $uri, $matches)) {
+//                echo "Match found for route: $route<br>";
+//
+//                $params = array_filter(
+//                    $matches,
+//                    'is_string',
+//                    ARRAY_FILTER_USE_KEY
+//                );
+//
+//                $action = $details['action'];
+//                if (is_callable($action)) {
+//                    call_user_func_array($action, $params);
+//                } else if (is_string($action)) {
+//                    list($controller, $method) = explode('@', $action);
+//                    (new $controller)->$method(...array_values($params));
+//                }
+//                return;
+//            } else {
+//                echo "No match for route: $route with URI: $uri<br>";
+//            }
+
+
             if (preg_match($route, $uri, $matches)) {
                 $params = array_filter(
                     $matches,
@@ -112,6 +140,8 @@ class Router
         // Dodaj ispis za dijagnostiku
         echo "Parsed URI (inside parseUrl): $trimmedUri<br>";
         // Vrati "/" ako je URI prazan nakon trimovanja
-        return $trimmedUri === '' ? '/' : $trimmedUri;
+        //return $trimmedUri === '' ? '/' : $trimmedUri;
+        // Dodaj početni `/` za kompatibilnost sa definisanim rutama
+        return '/' . $trimmedUri;
     }
 }
