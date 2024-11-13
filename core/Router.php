@@ -37,15 +37,12 @@ class Router
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = $this->parseUrl();
 
-        // Dodaj ispis za dijagnostiku
-        echo "Request Method: $method<br>";
-        echo "Parsed URI: $uri<br>";
-        echo "Defined Routes: ";
-        print_r($this->routes[$method]);
-        echo "<br>";
-
-
-
+//        // Dodaj ispis za dijagnostiku
+//        echo "Request Method: $method<br>";
+//        echo "Parsed URI: $uri<br>";
+//        echo "Defined Routes: ";
+//        print_r($this->routes[$method]);
+//        echo "<br>";
 
         foreach ($this->routes[$method] as $route => $details) {
 
@@ -92,6 +89,7 @@ class Router
                 } else {
                     if (is_string($action)) {
                         list($controller, $method) = explode('@', $action);
+                        $controller = "App\\Controllers\\$controller";
                         (new $controller)->$method(...array_values($params));
                     }
                 }
@@ -138,7 +136,7 @@ class Router
         $trimmedUri = trim(parse_url($uri, PHP_URL_PATH), '/');
 
         // Dodaj ispis za dijagnostiku
-        echo "Parsed URI (inside parseUrl): $trimmedUri<br>";
+        //echo "Parsed URI (inside parseUrl): $trimmedUri<br>";
         // Vrati "/" ako je URI prazan nakon trimovanja
         //return $trimmedUri === '' ? '/' : $trimmedUri;
         // Dodaj početni `/` za kompatibilnost sa definisanim rutama
