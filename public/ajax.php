@@ -61,10 +61,7 @@ try {
     if (method_exists($controller, $action)) {
         // Prosleđivanje podataka i obrade prema HTTP metodi
         $response = match ($method) {
-            'GET' => $controller->$action($inputData),
-            'POST' => $controller->$action($inputData),
-            'PUT' => $controller->$action($inputData),
-            'DELETE' => $controller->$action($inputData),
+            'GET', 'POST', 'PUT', 'DELETE' => $controller->$action($inputData),
             default => throw new Exception("Unsupported HTTP method")
         };
         echo json_encode(['status' => 'success', 'data' => $response]);
