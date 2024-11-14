@@ -4,6 +4,7 @@
         "psr-4": {
             "Ninajevtic\\Ninaverse\\": "src/",
             "App\\": "app/",
+            "App\\Services\\": "app/Services/",
             "Core\\": "core/"
         }
     },
@@ -13,5 +14,7 @@
             "email": "jevtic.n.nina@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": "^8.2.12"
+    }
 }

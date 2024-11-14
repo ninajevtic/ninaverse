@@ -1,0 +1,18 @@
+$id = 123; // Primer int ID iz baze
+$hashedId = hash('sha256', $id); // Koristi sha256 za hashiranje
+echo $hashedId; // Koristite heš za prikaz
+biblioteka hashids
+
+class User {
+    private int $id;
+    private string $name;
+    private ?string $email; // Nullable tip (dozvoljava null vrednosti)
+
+    public function __construct(int $id, string $name, ?string $email = null) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->email = $email;
+    }
+}
+
+validacija polja u tabeli kroz modele i kroz bazu
