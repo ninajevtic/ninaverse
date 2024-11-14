@@ -28,7 +28,13 @@ class UserService
         $stmt = $this->pdo->prepare(
             "INSERT INTO Users (name, email, password_hash) VALUES (:name, :email, :password_hash)"
         );
-        return $stmt->execute($userData);
+        //return $stmt->execute($userData);
+        // Try executing the statement, and throw exception if it fails.
+        if (!$stmt->execute($userData)) {
+            throw new \Exception("Failed to create user in the database.");
+        }
+
+        return true;
     }
     // Dodajte još metoda prema potrebama
 }

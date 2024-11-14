@@ -16,3 +16,86 @@ class User {
 }
 
 validacija polja u tabeli kroz modele i kroz bazu
+
+// Primer sa jQuery-jem za slanje podataka o novom korisniku
+$.ajax({
+    url: '/path/to/ajax.php',
+    method: 'POST',
+    data: {
+        module: 'user',
+        action: 'create',
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        password: 'securepassword'
+    },
+    success: function(response) {
+        if (response.status === 'success') {
+            alert(response.message);
+        } else {
+            alert('Error: ' + response.message);
+        }
+    },
+    error: function(jqXHR) {
+        alert('AJAX request failed: ' + jqXHR.responseText);
+    }
+});
+Autentifikacija i CSRF Zaštita: Proverite da li je korisnik prijavljen i razmotrite dodavanje CSRF zaštite.
+
+Error Handling: Koristite try-catch blokove da hvatate izuzetke i odgovarate u formatu JSON sa odgovarajućim HTTP statusom.
+
+Response u JSON Formatu: Postavite header kao Content-Type: application/json i sve odgovore formatirajte kao JSON za konzistentnost.
+
+$.ajax({
+    url: '/path/to/ajax.php',
+    type: 'GET',
+    data: {
+        module: 'user',
+        action: 'getUserInfo',
+        user_id: 1
+    },
+    success: function(response) {
+        console.log(response);
+    }
+});
+
+$.ajax({
+    url: '/path/to/ajax.php',
+    type: 'POST',
+    data: {
+        module: 'user',
+        action: 'createUser',
+        name: 'John',
+        email: 'john@example.com'
+    },
+    success: function(response) {
+        console.log(response);
+    }
+});
+
+$.ajax({
+    url: '/path/to/ajax.php',
+    type: 'PUT',
+    data: JSON.stringify({
+        module: 'user',
+        action: 'updateUser',
+        user_id: 1,
+        name: 'John Doe Updated'
+    }),
+    contentType: 'application/json',
+    success: function(response) {
+        console.log(response);
+    }
+});
+
+$.ajax({
+    url: '/path/to/ajax.php',
+    type: 'DELETE',
+    data: {
+        module: 'user',
+        action: 'deleteUser',
+        user_id: 1
+    },
+    success: function(response) {
+        console.log(response);
+    }
+});
