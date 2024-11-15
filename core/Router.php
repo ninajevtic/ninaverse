@@ -5,141 +5,83 @@ namespace Core;
 class Router
 {
     private $routes = [];
-    private $middlewares = [];
 
-    public function get($route, $action, $middlewares = [])
+    public function get($uri, $controller)
     {
-        $this->registerRoute('GET', $route, $action, $middlewares);
-    }
-
-    public function post($route, $action, $middlewares = [])
-    {
-        $this->registerRoute('POST', $route, $action, $middlewares);
-    }
-
-    private function registerRoute($method, $route, $action, $middlewares)
-    {
-        $route = $this->parseRoute($route);
-        $this->routes[$method][$route] = [
-            'action'      => $action,
-            'middlewares' => $middlewares
+        $this->routes[] = [
+            'uri'        => $uri,
+            'controller' => $controller,
+            'method'     => 'GET'
         ];
     }
 
-    private function parseRoute($route)
+    public function post($uri, $controller)
     {
-        return '#^' . preg_replace('/\{(\w+)\}/', '(?P<\1>[^/]+)', $route)
-            . '$#';
+        $this->routes[] = [
+            'uri'        => $uri,
+            'controller' => $controller,
+            'method'     => 'POST'
+        ];
     }
 
-    public function dispatch()
+    public function delete($uri, $controller)
     {
-        $method = $_SERVER['REQUEST_METHOD'];
-        $uri = $this->parseUrl();
+        $this->routes[] = [
+            'uri'        => $uri,
+            'controller' => $controller,
+            'method'     => 'DELETE'
+        ];
+    }
 
-//        // Dodaj ispis za dijagnostiku
-//        echo "Request Method: $method<br>";
-//        echo "Parsed URI: $uri<br>";
-//        echo "Defined Routes: ";
-//        print_r($this->routes[$method]);
-//        echo "<br>";
+    public function patch($uri, $controller)
+    {
+        $this->routes[] = [
+            'uri'        => $uri,
+            'controller' => $controller,
+            'method'     => 'PATCH'
+        ];
+    }
 
-        foreach ($this->routes[$method] as $route => $details) {
+    public function put($uri, $controller)
+    {
+        $this->routes[] = [
+            'uri'        => $uri,
+            'controller' => $controller,
+            'method'     => 'PUT'
+        ];
+    }
 
-//            // Dodaj dijagnostiku za `preg_match`
-//            if (preg_match($route, $uri, $matches)) {
-//                echo "Match found for route: $route<br>";
-//
-//                $params = array_filter(
-//                    $matches,
-//                    'is_string',
-//                    ARRAY_FILTER_USE_KEY
-//                );
-//
-//                $action = $details['action'];
-//                if (is_callable($action)) {
-//                    call_user_func_array($action, $params);
-//                } else if (is_string($action)) {
-//                    list($controller, $method) = explode('@', $action);
-//                    (new $controller)->$method(...array_values($params));
-//                }
-//                return;
-//            } else {
-//                echo "No match for route: $route with URI: $uri<br>";
-//            }
+    public function route()
+    {
+        $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
+        $method =  $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
+        foreach ($this->routes as $route) {
+            if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
+                [$controller, $method] = explode('@', $route['controller']);
+                $controller = "App\\Controllers\\$controller";
 
-
-            if (preg_match($route, $uri, $matches)) {
-                $params = array_filter(
-                    $matches,
-                    'is_string',
-                    ARRAY_FILTER_USE_KEY
-                );
-                // Pokretanje middleware-a
-                foreach ($details['middlewares'] as $middleware) {
-                    $middlewareInstance = new $middleware();
-                    if (!$middlewareInstance->handle($params)) {
-                        return;  // Ako middleware zaustavi izvršenje, prekida se dispatch
+                if (class_exists($controller)) {
+                    $controllerInstance = new $controller();
+                    if (method_exists($controllerInstance, $method)) {
+                        return $controllerInstance->$method();
+                    } else {
+                        $this->abort(500); // Method not found
                     }
-                }
-                // Pozivanje akcije
-                $action = $details['action'];
-                if (is_callable($action)) {
-                    call_user_func_array($action, $params);
                 } else {
-                    if (is_string($action)) {
-                        list($controller, $method) = explode('@', $action);
-                        $controller = "App\\Controllers\\$controller";
-                        (new $controller)->$method(...array_values($params));
-                    }
+                    $this->abort(500); // Controller not found
                 }
-                return;
             }
         }
-        http_response_code(404);
-        echo "404 - Route not found";
+
+        $this->abort(404); // Route not found
     }
 
-    private function parseUrl(): string
+    protected function abort($code = 404)
     {
-//        $uri = $_SERVER['REQUEST_URI'];
-//        //echo $uri;
-//        // Ukloni poddirektorijum i `index.php` ako su prisutni
-//        //$uri = str_replace(['/ninaverse/public', '/index.php'], '', $uri);
-//        // Uklonite dodatni put (npr. '/test/public') ako se aplikacija nalazi u poddirektorijumu
-//        $uri = str_replace(
-//            '/ninaverse/public',
-//            '',
-//            $uri
-//        ); // Podesite ovo prema putanji vašeg projekta
-//        // Uklonite `index.php` iz URI-a
-//        $uri = str_replace(
-//            '/index.php',
-//            '',
-//            $uri
-//        );  // Ukloni index.php ako je prisutan
-//        // Trimuj dodatne `/` sa početka i kraja URI-ja
-//        $trimmedUri = trim(parse_url($uri, PHP_URL_PATH), '/');
-//        // Vrati "/" ako je URI prazan nakon trimovanja
-//        return $trimmedUri === '' ? '/' : $trimmedUri;
-        $uri = $_SERVER['REQUEST_URI'];
-
-        // Ukloni poddirektorijum (`/ninaverse/public`) ako se aplikacija nalazi u njemu
-        if (strpos($uri, '/ninaverse/public') === 0) {
-            $uri = substr($uri, strlen('/ninaverse/public'));
-        }
-
-        // Ukloni `index.php` iz URI-a, ako je prisutan
-        $uri = str_replace('/index.php', '', $uri);
-
-        // Trimuj dodatne `/` sa početka i kraja URI-ja
-        $trimmedUri = trim(parse_url($uri, PHP_URL_PATH), '/');
-
-        // Dodaj ispis za dijagnostiku
-        //echo "Parsed URI (inside parseUrl): $trimmedUri<br>";
-        // Vrati "/" ako je URI prazan nakon trimovanja
-        //return $trimmedUri === '' ? '/' : $trimmedUri;
-        // Dodaj početni `/` za kompatibilnost sa definisanim rutama
-        return '/' . $trimmedUri;
+        http_response_code($code);
+        //requre views/{$code}.php
+        //require views/404.php;
+        //ubija dalje izvrsavanje
+        die();
     }
 }

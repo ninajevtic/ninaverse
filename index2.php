@@ -16,7 +16,8 @@ if (empty($_SESSION['csrf_token'])) {
 }
 $csrfToken = $_SESSION['csrf_token'];
 // 1. Uključi Composer autoload (ako koristiš Composer za autoloading)
-require_once __DIR__ . '/../vendor/autoload.php';
+
+require_once __DIR__ . '/vendor/autoload.php';
 // Definišite baznu putanju
 $basePath = '/ninaverse/public';
 // Instancirajte DocumentManager
@@ -38,12 +39,38 @@ $router = new Router();
 //require_once __DIR__ . '/../routes/web.php';
 // Pokreni router da obradi zahtev
 
-// Funkcija koja uključuje `web.php` sa prosleđivanjem `$router` i `$documentManager`
-function loadRoutes($router, $documentManager) {
-    require __DIR__ . '/../routes/web.php';
-}
+$router->register(
+    '/',
+    function () {
+        echo 'Home';
+    }
+);
 
-// Pozovi funkciju sa `$router` i `$documentManager`
-loadRoutes($router, $documentManager);
-$router->dispatch();
+$router->register(
+    '/chat',
+    function () {
+        echo 'Chat';
+    }
+);
+
+echo $router->resolve($_SERVER['REQUEST_URI']);
+
+$uri = parse_url($_SERVER['REQUEST_URI'])['path'];
+//$router->dispatch();
+//tj.
+//$method =  if(isset($_POST['_method'])) ? $_POST['method'] : $_SERVER['REQUEST_METHOD'];
+$method =  $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
+$router->route($uri, $method);
+
+//// Funkcija koja uključuje `web.php` sa prosleđivanjem `$router` i `$documentManager`
+//function loadRoutes($router, $documentManager) {
+//    require __DIR__ . '/routes/web.php';
+//}
+//
+//// Pozovi funkciju sa `$router` i `$documentManager`
+//loadRoutes($router, $documentManager);
+//$router->dispatch();
+
+
+
 

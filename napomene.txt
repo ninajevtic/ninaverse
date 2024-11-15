@@ -99,3 +99,13 @@ $.ajax({
         console.log(response);
     }
 });
+
+www.ninaverse.com/user/edit/1234567890/username
+argumenti -user - edit -1234567890 param1/ username param2
+exlopde
+provera niza- validan ->error malaslova-_brojevi
+
+Control
+Component (Plugin, Module)
+Theme
+templates

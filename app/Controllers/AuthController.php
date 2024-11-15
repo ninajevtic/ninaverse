@@ -3,6 +3,10 @@ namespace App\Controllers;
 
 class AuthController {
 
+    public function test() {
+        echo 'test';
+    }
+
     // Metoda za obradu login zahteva sa CSRF proverom
     public function handleLoginRequest() {
         var_dump("tes");

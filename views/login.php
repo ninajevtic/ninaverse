@@ -4,6 +4,7 @@
             <div class="col-md-9 col-lg-6 col-xl-5">
                 <img src="/ninaverse/public/images/draw2.webp"
                      class="img-fluid" alt="Sample image">
+
             </div>
             <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                 <form action="<?= $documentManager->generateUrl('/login') ?>" method="POST">

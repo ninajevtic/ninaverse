@@ -5,6 +5,7 @@
             "Ninajevtic\\Ninaverse\\": "src/",
             "App\\": "app/",
             "App\\Services\\": "app/Services/",
+            "App\\Exceptions\\": "app/Exceptions/",
             "Core\\": "core/"
         }
     },
