@@ -6,48 +6,13 @@ class Router
 {
     private $routes = [];
 
-    public function get($uri, $controller)
+    public function addRoute(string $method, string $uri, string $controllerClass, string $action): void
     {
         $this->routes[] = [
             'uri'        => $uri,
-            'controller' => $controller,
-            'method'     => 'GET'
-        ];
-    }
-
-    public function post($uri, $controller)
-    {
-        $this->routes[] = [
-            'uri'        => $uri,
-            'controller' => $controller,
-            'method'     => 'POST'
-        ];
-    }
-
-    public function delete($uri, $controller)
-    {
-        $this->routes[] = [
-            'uri'        => $uri,
-            'controller' => $controller,
-            'method'     => 'DELETE'
-        ];
-    }
-
-    public function patch($uri, $controller)
-    {
-        $this->routes[] = [
-            'uri'        => $uri,
-            'controller' => $controller,
-            'method'     => 'PATCH'
-        ];
-    }
-
-    public function put($uri, $controller)
-    {
-        $this->routes[] = [
-            'uri'        => $uri,
-            'controller' => $controller,
-            'method'     => 'PUT'
+            'controller' => $controllerClass, // Store class name
+            'action'     => $action,
+            'method'     => strtoupper($method)
         ];
     }
 
@@ -57,13 +22,13 @@ class Router
         $method =  $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
         foreach ($this->routes as $route) {
             if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
-                [$controller, $method] = explode('@', $route['controller']);
-                $controller = "App\\Controllers\\$controller";
+                $controllerClass = $route['controller'];
+                $action = $route['action'];
 
-                if (class_exists($controller)) {
-                    $controllerInstance = new $controller();
-                    if (method_exists($controllerInstance, $method)) {
-                        return $controllerInstance->$method();
+                if (class_exists($controllerClass)) {
+                    $controllerInstance = new $controllerClass();
+                    if (method_exists($controllerInstance, $action)) {
+                        return $controllerInstance->$action();
                     } else {
                         $this->abort(500); // Method not found
                     }
@@ -79,8 +44,14 @@ class Router
     protected function abort($code = 404)
     {
         http_response_code($code);
-        //requre views/{$code}.php
-        //require views/404.php;
+        //404.php;
+        $viewPath = __DIR__ . "/views/errors/{$code}.php";
+
+        if (file_exists($viewPath)) {
+            require $viewPath;
+        } else {
+            echo "Error {$code}";
+        }
         //ubija dalje izvrsavanje
         die();
     }

@@ -1,11 +1,5 @@
 RewriteEngine On
-RewriteBase /ninaverse/
 
-# Preusmeravanje sa index.php na root (unutar ninaverse)
-RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*index\.php\ HTTP/
-RewriteRule ^index\.php$ /ninaverse/ [R=301,L]
-
-# Preusmeravanje svih ruta na index.php za dalju obradu
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]
