@@ -33,9 +33,9 @@ class UserChat
 
     /**
      * **Soft delete timestamp**
-     * @var DateTime|null Timestamp of deletion, or null if not deleted
+     * @var int|null Timestamp of deletion, or null if not deleted
      */
-    private ?DateTime $deletedAt;
+    private ?int $deletedAt;
     // #endregion
 
     // #region Constructor
@@ -46,14 +46,14 @@ class UserChat
      * @param int           $chatId    **Identifier of the associated chat**
      * @param int           $userId    **Identifier of the associated user**
      * @param int           $joinedAt  **Unix timestamp when the user joined the chat**
-     * @param DateTime|null $deletedAt **Timestamp of deletion, or null if not deleted**
+     * @param int|null      $deletedAt **Timestamp of deletion, or null if not deleted**
      */
     public function __construct(
         int $id,
         int $chatId,
         int $userId,
         int $joinedAt,
-        ?DateTime $deletedAt = null
+        ?int $deletedAt = null
     ) {
         $this->id = $id;
         $this->chatId = $chatId;
@@ -120,48 +120,76 @@ class UserChat
     /**
      * **Sets the UserChat ID.**
      *
+     * Validates the userChat ID before setting it.
+     *
      * @param int $id **Unique identifier for the UserChat record**
+     *
+     * @throw Exception if the userChat ID is invalid
      *
      * @return void
      */
     public function setId(int $id): void
     {
+        if (!Validator::numberic($id)) {
+            throw new Exception('Invalid userChat ID.');
+        }
         $this->id = $id;
     }
 
     /**
      * **Sets the associated chat ID.**
      *
+     * Validates the chat ID before setting it.
+     *
      * @param int $chatId **Identifier of the associated chat**
+     *
+     * @throw Exception if the chat ID is invalid
      *
      * @return void
      */
     public function setChatId(int $chatId): void
     {
+        if (!Validator::numberic($chatId)) {
+            throw new Exception('Invalid chat ID.');
+        }
         $this->chatId = $chatId;
     }
 
     /**
      * **Sets the associated user ID.**
      *
+     *  Validates the user ID before setting it.
+     *
      * @param int $userId **Identifier of the associated user**
+     *
+     * @throw Exception if the user ID is invalid
      *
      * @return void
      */
     public function setUserId(int $userId): void
     {
+        if (!Validator::numberic($userId)) {
+            throw new Exception('Invalid user ID.');
+        }
         $this->userId = $userId;
     }
 
     /**
      * **Sets the joined timestamp.**
      *
+     * Validates the timestamp before setting it.
+     *
      * @param int $joinedAt **Unix timestamp when the user joined the chat**
+     *
+     * @throw Exception if the joined timestamp is invalid
      *
      * @return void
      */
     public function setJoinedAt(int $joinedAt): void
     {
+        if (!Validator::timestamp($joinedAt)) {
+            throw new Exception('Invalid Unix timestamp joined.');
+        }
         $this->joinedAt = $joinedAt;
     }
 
@@ -169,12 +197,19 @@ class UserChat
      * **Sets the soft delete timestamp.**
      * If the record is deleted, set this to the deletion timestamp; otherwise, set to `null`.
      *
+     * Validates the timestamp before setting it.
+     *
      * @param DateTime|null $deletedAt **Timestamp of deletion, or null if not deleted**
+     *
+     * @throw Exception if the delete timestamp is invalid
      *
      * @return void
      */
-    public function setDeletedAt(?DateTime $deletedAt): void
+    public function setDeletedAt(int $deletedAt): void
     {
+        if (!Validator::timestamp($deletedAt)) {
+            throw new Exception('Invalid Unix timestamp deletion.');
+        }
         $this->deletedAt = $deletedAt;
     }
     // #endregion

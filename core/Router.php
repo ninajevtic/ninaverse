@@ -18,6 +18,10 @@ class Router
 
     public function route()
     {
+        // Validacija URI-ja
+        if (!\Core\Validator::validateUrl($_SERVER['REQUEST_URI'])) {
+            $this->abort(400); // Bad Request ako URL nije validan
+        }
         $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
         $method =  $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
         foreach ($this->routes as $route) {

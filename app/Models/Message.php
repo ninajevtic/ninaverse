@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use DateTime;
+use Core\Validator;
+use Exception;
 
 class Message
 {
@@ -40,9 +41,9 @@ class Message
     /**
      * **Soft delete timestamp**
      *
-     * @var DateTime|null Null if not deleted, otherwise deletion timestamp
+     * @var int|null Null if not deleted, otherwise deletion timestamp
      */
-    private ?DateTime $deletedAt;
+    private ?int $deletedAt;
     // #endregion
     // #region Constructor
     /**
@@ -53,7 +54,7 @@ class Message
      * @param User          $user      **User instance of the message sender**
      * @param string        $content   **Content of the message**
      * @param int           $sentAt    **Timestamp of when the message was sent**
-     * @param DateTime|null $deletedAt **Timestamp of deletion if soft-deleted; null if active**
+     * @param int|null $deletedAt **Timestamp of deletion if soft-deleted; null if active**
      */
     public function __construct(
         int $messageId,
@@ -61,7 +62,7 @@ class Message
         User $user,
         string $content,
         int $sentAt,
-        ?DateTime $deletedAt = null
+        ?int $deletedAt = null
     ) {
         $this->messageId = $messageId;
         $this->chatId = $chatId;
@@ -126,9 +127,9 @@ class Message
      * **Returns the soft delete timestamp.**
      * Returns `null` if the message is not deleted.
      *
-     * @return DateTime|null **Timestamp of deletion, or null if not deleted**
+     * @return int|null **Timestamp of deletion, or null if not deleted**
      */
-    public function getDeletedAt(): ?DateTime
+    public function getDeletedAt(): ?int
     {
         return $this->deletedAt;
     }
@@ -137,60 +138,95 @@ class Message
     /**
      * **Sets the message ID.**
      *
+     * Validates the message ID before setting it.
+     *
      * @param int $messageId **Unique identifier for the message**
+     *
+     * @throw Exception if the message ID is invalid
      *
      * @return void
      */
     public function setMessageId(int $messageId): void
     {
+        if (!Validator::numberic($messageId)) {
+            throw new Exception('Invalid chat ID.');
+        }
         $this->messageId = $messageId;
     }
 
     /**
      * **Sets the associated chat ID.**
      *
+     * Validates the chat ID before setting it.
+     *
      * @param int $chatId **ID of the chat to which this message belongs**
+     *
+     * @throw Exception if the chat ID is invalid
      *
      * @return void
      */
     public function setChatId(int $chatId): void
     {
+        if (!Validator::numberic($chatId)) {
+            throw new Exception('Invalid chat ID.');
+        }
         $this->chatId = $chatId;
     }
 
     /**
      * **Sets the user who sent the message.**
      *
+     * Validates the user before setting it.
+     *
      * @param User $user **User instance representing the sender**
+     *
+     * @throw Exception if the User is invalid
      *
      * @return void
      */
     public function setUser(User $user): void
     {
+        if (!$user instanceof User) {
+            throw new Exception('Invalid user object provided.');
+        }
         $this->user = $user;
     }
 
     /**
      * **Sets the content of the message.**
      *
+     * Validates the content before setting it.
+     *
      * @param string $content **Text content of the message**
+     *
+     * @throw Exception if the content of the message is invalid
      *
      * @return void
      */
     public function setContent(string $content): void
     {
+        if (!Validator::string($content, 8, 1000)) {
+            throw new Exception('Invalid message content.');
+        }
         $this->content = $content;
     }
 
     /**
      * **Sets the sent timestamp.**
      *
+     * Validates the timestamp before setting it.
+     *
      * @param int $sentAt **Unix timestamp of when the message was sent**
+     *
+     * @throw Exception if the sent timestamp is invalid
      *
      * @return void
      */
     public function setSentAt(int $sentAt): void
     {
+        if (!Validator::timestamp($sentAt)) {
+            throw new Exception('Invalid Unix timestamp sent.');
+        }
         $this->sentAt = $sentAt;
     }
 
@@ -198,12 +234,19 @@ class Message
      * **Sets the soft delete timestamp.**
      * If the message is deleted, set this to the deletion timestamp; otherwise, set to `null`.
      *
-     * @param DateTime|null $deletedAt **Timestamp of deletion, or null if not deleted**
+     * Validates the timestamp before setting it.
+     *
+     * @param int|null $deletedAt **Timestamp of deletion, or null if not deleted**
+     *
+     * @throw Exception if the delete timestamp is invalid
      *
      * @return void
      */
-    public function setDeletedAt(?DateTime $deletedAt): void
+    public function setDeletedAt(int $deletedAt): void
     {
+        if (!Validator::timestamp($deletedAt)) {
+            throw new Exception('Invalid Unix timestamp deletion.');
+        }
         $this->deletedAt = $deletedAt;
     }
     // #endregion

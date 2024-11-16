@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use DateTime;
+use Core\Validator;
+use Exception;
 
 class User
 {
@@ -46,9 +47,9 @@ class User
     /**
      * **Creation timestamp**
      *
-     * @var DateTime Date and time when the user was created
+     * @var int Unix timestamp when the user was created
      */
-    private DateTime $createdAt;
+    private int $createdAt;
     /**
      * **Update timestamp**
      *
@@ -58,23 +59,23 @@ class User
     /**
      * **Soft delete timestamp**
      *
-     * @var DateTime|null Timestamp of deletion, or null if not deleted
+     * @var int|null Timestamp of deletion, or null if not deleted
      */
-    private ?DateTime $deletedAt;
+    private ?int $deletedAt;
     // #endregion
     // #region Constructor
     /**
      * **Constructs a new User instance.**
      *
-     * @param int           $userId         **Unique identifier for the user**
-     * @param string        $name           **Full name of the user**
-     * @param string        $email          **User's email address**
-     * @param string        $passwordHash   **Hashed password of the user**
-     * @param string|null   $profilePicture **URL of the user's profile picture**
-     * @param bool          $isVerified     **Indicates whether the user is verified**
-     * @param DateTime      $createdAt      **Date and time when the user was created**
-     * @param int           $updatedAt      **Unix timestamp of the last update**
-     * @param DateTime|null $deletedAt      **Timestamp of deletion, or null if not deleted**
+     * @param int         $userId         **Unique identifier for the user**
+     * @param string      $name           **Full name of the user**
+     * @param string      $email          **User's email address**
+     * @param string      $passwordHash   **Hashed password of the user**
+     * @param string|null $profilePicture **URL of the user's profile picture**
+     * @param bool        $isVerified     **Indicates whether the user is verified**
+     * @param int         $createdAt      **Unix timestamp when the user was created**
+     * @param int         $updatedAt      **Unix timestamp of the last update**
+     * @param int|null    $deletedAt      **Unix timestamp of deletion, or null if not deleted**
      */
     public function __construct(
         int $userId,
@@ -83,9 +84,9 @@ class User
         string $passwordHash,
         ?string $profilePicture,
         bool $isVerified,
-        DateTime $createdAt,
+        int $createdAt,
         int $updatedAt,
-        ?DateTime $deletedAt = null
+        int $deletedAt = null
     ) {
         $this->userId = $userId;
         $this->name = $name;
@@ -162,9 +163,9 @@ class User
     /**
      * **Returns the creation timestamp.**
      *
-     * @return DateTime **Date and time when the user was created**
+     * @return int **Unix timestamp when the user was created**
      */
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): int
     {
         return $this->createdAt;
     }
@@ -183,9 +184,9 @@ class User
      * **Returns the soft delete timestamp.**
      * Returns `null` if the user is not deleted.
      *
-     * @return DateTime|null **Timestamp of deletion, or null if not deleted**
+     * @return int|null **Timestamp of deletion, or null if not deleted**
      */
-    public function getDeletedAt(): ?DateTime
+    public function getDeletedAt(): ?int
     {
         return $this->deletedAt;
     }
@@ -194,109 +195,163 @@ class User
     /**
      * **Sets the user ID.**
      *
+     * Validates the user ID before setting it.
+     *
      * @param int $userId **Unique identifier for the user**
      *
      * @return void
+     * @throws Exception if the user ID is invalid
+     *
      */
     public function setUserId(int $userId): void
     {
+        if (!Validator::numberic($userId)) {
+            throw new Exception('Invalid user ID.');
+        }
         $this->userId = $userId;
     }
 
     /**
      * **Sets the user's name.**
      *
+     * Validates the user name before setting it.
+     *
      * @param string $name **Full name of the user**
      *
      * @return void
+     * @throws Exception if the user name is invalid
+     *
      */
     public function setName(string $name): void
     {
+        if (!Validator::string($name, 8, 100)) {
+            throw new Exception('Invalid user name.');
+        }
         $this->name = $name;
     }
 
     /**
      * **Sets the user's email address.**
      *
+     * Validate the user mail before setting it.
+     *
      * @param string $email **User's email address**
+     *
+     * @throws Exception if the user email is invalid
      *
      * @return void
      */
     public function setEmail(string $email): void
     {
+        if (!Validator::email($email)) {
+            throw new Exception('Invalid user email.');
+        }
         $this->email = $email;
     }
 
     /**
      * **Sets the hashed password.**
      *
+     * Validates the hashed password before setting it.
+     *
      * @param string $passwordHash **Hashed password of the user**
      *
      * @return void
+     * @throws Exception if the hashed password is invalid
+     *
      */
     public function setPasswordHash(string $passwordHash): void
     {
+        if (!Validator::passwordHash($passwordHash)) {
+            throw new Exception('Invalid password hash.');
+        }
         $this->passwordHash = $passwordHash;
     }
 
     /**
      * **Sets the profile picture URL.**
      *
+     * Validates the profile picture URL before setting it.
+     *
      * @param string|null $profilePicture **URL of the user's profile picture**
+     *
+     * @throws Exception if the profile picture URL is invalid
      *
      * @return void
      */
     public function setProfilePicture(?string $profilePicture): void
     {
+        if ($profilePicture !== null
+            && !Validator::profilePicture(
+                $profilePicture
+            )
+        ) {
+            throw new Exception('Invalid profile picture URL.');
+        }
         $this->profilePicture = $profilePicture;
     }
 
     /**
      * **Sets the verification status.**
      *
+     * Validates the verification status before setting it.
+     *
      * @param bool $isVerified **Indicates whether the user is verified**
+     *
+     * @throws Exception if the verification status is invalid
      *
      * @return void
      */
     public function setIsVerified(bool $isVerified): void
     {
+        if (!Validator::boolean($isVerified)) {
+            throw new Exception('Invalid value for isVerified. Must be a boolean.');
+        }
         $this->isVerified = $isVerified;
     }
 
-    /**
-     * **Sets the creation timestamp.**
-     *
-     * @param DateTime $createdAt **Date and time of user creation**
-     *
-     * @return void
-     */
-    public function setCreatedAt(DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * **Sets the last updated timestamp.**
-     *
-     * @param int $updatedAt **Unix timestamp of the last update**
-     *
-     * @return void
-     */
-    public function setUpdatedAt(int $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
+//    /**
+//     * **Sets the creation timestamp.**
+//     *
+//     * Validates the created timestamp before setting it.
+//     *
+//     * @param DateTime $createdAt **Date and time of user creation**
+//     *
+//     * @return void
+//     */
+//    public function setCreatedAt(DateTime $createdAt): void
+//    {
+//        $this->createdAt = $createdAt;
+//    }
+//    /**
+//     * **Sets the last updated timestamp.**
+//     *
+//     *
+//     * @param int $updatedAt **Unix timestamp of the last update**
+//     *
+//     * @return void
+//     */
+//    public function setUpdatedAt(int $updatedAt): void
+//    {
+//        $this->updatedAt = $updatedAt;
+//    }
     /**
      * **Sets the soft delete timestamp.**
-     * If the user is deleted, set this to the deletion timestamp; otherwise, set to `null`.
+     * If the user is deleted, set this to the deletion timestamp; otherwise, it is `null`.
      *
-     * @param DateTime|null $deletedAt **Timestamp of deletion, or null if not deleted**
+     * Validates the deleted timestamp before setting it.
+     *
+     * @param int $deletedAt **Unix timestamp of deletion**
+     *
+     * @throw Exception if the delete timestamp is invalid
      *
      * @return void
      */
-    public function setDeletedAt(?DateTime $deletedAt): void
+    public function setDeletedAt(int $deletedAt): void
     {
+        if (!Validator::timestamp($deletedAt)) {
+            throw new Exception('Invalid Unix timestamp deletion.');
+        }
         $this->deletedAt = $deletedAt;
     }
     // #endregion

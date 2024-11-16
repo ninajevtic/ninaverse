@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use DateTime;
+use Core\Validator;
 use Enums\ChatType;
+use Exception;
 
 class Chat
 {
@@ -29,10 +30,10 @@ class Chat
      */
     private int $createdBy;
     /**
-     * **Date and time of chat creation**
-     * @var DateTime When the chat was created
+     * **Unix timestamp of chat creation**
+     * @var int When the chat was created
      */
-    private DateTime $createdAt;
+    private int $createdAt;
     /**
      * **Timestamp of the last update**
      * @var int Unix timestamp of the last update
@@ -40,9 +41,9 @@ class Chat
     private int $updatedAt;
     /**
      * **Soft delete date and time**
-     * @var DateTime|null If the chat is deleted, contains the deletion date and time; otherwise, null
+     * @var int|null If the chat is deleted, contains the deletion timestamp; otherwise, null
      */
-    private ?DateTime $deletedAt;
+    private ?int $deletedAt;
     // #endregion
     // #region Constructor
     /**
@@ -52,18 +53,18 @@ class Chat
      * @param string|null   $name        **Name or title of the chat**
      * @param ChatType      $chatType    **Type of chat** (public or private)
      * @param int           $createdBy   **User ID of the chat creator**
-     * @param DateTime      $createdAt   **Date and time of chat creation**
+     * @param int           $createdAt   **Timestamp of chat creation**
      * @param int           $updatedAt   **Timestamp of the last update**
-     * @param DateTime|null $deletedAt   **Date and time of chat deletion** (null if not deleted)
+     * @param int|null      $deletedAt   **Timestamp of chat deletion** (null if not deleted)
      */
     public function __construct(
         int $chatId,
         ?string $name,
         ChatType $chatType,
         int $createdBy,
-        DateTime $createdAt,
+        int $createdAt,
         int $updatedAt,
-        ?DateTime $deletedAt = null
+        ?int $deletedAt = null
     ) {
         $this->chatId = $chatId;
         $this->name = $name;
@@ -117,11 +118,11 @@ class Chat
     }
 
     /**
-     * **Returns the date and time of creation.**
+     * **Returns the timestamp of creation.**
      *
-     * @return DateTime **Date and time when the chat was created**
+     * @return int **Unix timestamp when the chat was created**
      */
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): int
     {
         return $this->createdAt;
     }
@@ -137,12 +138,12 @@ class Chat
     }
 
     /**
-     * **Returns the date and time of deletion.**
+     * **Returns the timestamp of deletion.**
      * Returns `null` if the chat has not been deleted.
      *
-     * @return DateTime|null **Date and time when the chat was deleted, or null if not deleted**
+     * @return int|null **Date and time when the chat was deleted, or null if not deleted**
      */
-    public function getDeletedAt(): ?DateTime
+    public function getDeletedAt(): ?int
     {
         return $this->deletedAt;
     }
@@ -152,24 +153,38 @@ class Chat
     /**
      * **Sets the chat ID.**
      *
+     * Validates the chat ID before setting it.
+     *
      * @param int $chatId **ID of the chat**
+     *
+     * @throw Exception if the chat ID is invalid
      *
      * @return void
      */
     public function setChatId(int $chatId): void
     {
+        if (!Validator::numberic($chatId)) {
+            throw new Exception('Invalid chat ID.');
+        }
         $this->chatId = $chatId;
     }
 
     /**
      * **Sets the name of the chat.**
      *
+     * Validates the chat title before setting it.
+     *
      * @param string|null $name **Name or title of the chat**
+     *
+     * @throw Exception if the title of the chat is invalid
      *
      * @return void
      */
     public function setName(?string $name): void
     {
+        if ($name !== null && !Validator::string($name, 8, 100)) {
+            throw new Exception('Invalid chat title.');
+        }
         $this->name = $name;
     }
 
@@ -188,49 +203,63 @@ class Chat
     /**
      * **Sets the creator's user ID.**
      *
+     *  Validates the user ID before setting it.
+     *
      * @param int $createdBy **User ID of the chat creator**
+     *
+     * @throw Exception if the user ID is invalid
      *
      * @return void
      */
     public function setCreatedBy(int $createdBy): void
     {
+        if (!Validator::numberic($createdBy)) {
+            throw new Exception('Invalid user ID.');
+        }
         $this->createdBy = $createdBy;
     }
 
-    /**
-     * **Sets the creation date and time.**
-     *
-     * @param DateTime $createdAt **Date and time of creation**
-     *
-     * @return void
-     */
-    public function setCreatedAt(DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
+//    /**
+//     * **Sets the creation timestamp.**
+//     *
+//     * @param int $createdAt **Unix timestamp of creation**
+//     *
+//     * @return void
+//     */
+//    public function setCreatedAt(int $createdAt): void
+//    {
+//        $this->createdAt = $createdAt;
+//    }
 
-    /**
-     * **Sets the last updated timestamp.**
-     *
-     * @param int $updatedAt **Unix timestamp of the last update**
-     *
-     * @return void
-     */
-    public function setUpdatedAt(int $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
+//    /**
+//     * **Sets the last updated timestamp.**
+//     *
+//     * @param int $updatedAt **Unix timestamp of the last update**
+//     *
+//     * @return void
+//     */
+//    public function setUpdatedAt(int $updatedAt): void
+//    {
+//        $this->updatedAt = $updatedAt;
+//    }
 
     /**
      * **Sets the deletion date and time.**
-     * If the chat is deleted, set this to the deletion date; otherwise, set to `null`.
+     * If the chat is deleted, set this to the deletion date; otherwise, it is `null`.
      *
-     * @param DateTime|null $deletedAt **Date and time when the chat was deleted, or null if not deleted**
+     * Validates the timestamp before setting it.
+     *
+     * @param int|null $deletedAt **Unix timestamp when the chat was deleted, or null if not deleted**
+     *
+     * @throw Exception if the delete timestamp is invalid
      *
      * @return void
      */
-    public function setDeletedAt(?DateTime $deletedAt): void
+    public function setDeletedAt(int $deletedAt): void
     {
+        if (!Validator::timestamp($deletedAt)) {
+            throw new Exception('Invalid Unix timestamp deletion.');
+        }
         $this->deletedAt = $deletedAt;
     }
     // #endregion

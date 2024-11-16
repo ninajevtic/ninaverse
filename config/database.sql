@@ -9,9 +9,9 @@ CREATE TABLE Users (
     password_hash VARCHAR(255) NOT NULL,
     profile_picture VARCHAR(255),
     is_verified BOOLEAN DEFAULT FALSE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME NULL DEFAULT NULL
+    deleted_at TIMESTAMP NULL DEFAULT NULL
 );
 
 CREATE TABLE Chats (
@@ -19,9 +19,9 @@ CREATE TABLE Chats (
     name VARCHAR(100),
     chat_type ENUM('public', 'private') NOT NULL,
     created_by INT UNSIGNED,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME NULL DEFAULT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL,
     FOREIGN KEY (created_by) REFERENCES Users(user_id)
 );
 
@@ -31,7 +31,7 @@ CREATE TABLE Messages (
     user_id INT UNSIGNED NOT NULL,
     content TEXT NOT NULL,
     sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at DATETIME NULL DEFAULT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL,
     FOREIGN KEY (chat_id) REFERENCES Chats(chat_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
@@ -41,7 +41,7 @@ CREATE TABLE UserChats (
     chat_id INT UNSIGNED NOT NULL,
     user_id INT UNSIGNED NOT NULL,
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at DATETIME NULL DEFAULT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL,
     FOREIGN KEY (chat_id) REFERENCES Chats(chat_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
