@@ -16,19 +16,32 @@ class Router
         ];
     }
 
+    public function generateFullUrl(string $relativePath): string
+    {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'];
+
+        // Generišite apsolutni URL
+        return $protocol . '://' . $host . $relativePath;
+    }
     public function route()
     {
         // Validacija URI-ja
-        if (!\Core\Validator::validateUrl($_SERVER['REQUEST_URI'])) {
+        $url = $this->generateFullUrl($_SERVER['REQUEST_URI']);
+        if (!Validator::url($url)) {
             $this->abort(400); // Bad Request ako URL nije validan
         }
         $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
         $method =  $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
+
         foreach ($this->routes as $route) {
+//            echo $route['uri'].PHP_EOL;
+//            echo $uri.PHP_EOL;
+//            echo $route['method'].PHP_EOL;
+//            echo $method.PHP_EOL;//die();
             if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
                 $controllerClass = $route['controller'];
                 $action = $route['action'];
-
                 if (class_exists($controllerClass)) {
                     $controllerInstance = new $controllerClass();
                     if (method_exists($controllerInstance, $action)) {

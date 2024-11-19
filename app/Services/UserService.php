@@ -14,6 +14,15 @@ class UserService
         $this->pdo = Database::getInstance();
     }
 
+    public function getUsers(): ?array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT * FROM Users WHERE deleted_at IS NULL AND is_verified = 1 ORDER BY name DESC"
+        );
+        $stmt->execute();
+        return $stmt->fetch() ?: null;
+    }
+
     public function findUserById(int $userId): ?array
     {
         $stmt = $this->pdo->prepare(

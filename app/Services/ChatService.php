@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use PDO;
+use Core\Database;
 
 class ChatService
 {
@@ -10,7 +11,7 @@ class ChatService
 
     public function __construct()
     {
-        $this->pdo = \Core\Database::getInstance();
+        $this->pdo = Database::getInstance();
     }
 
     public function getChatsByUserId(int $userId): array

@@ -4,12 +4,19 @@ namespace Core;
 
 class Validator
 {
+    //sa ovim ne radi
+    //const BASE_PATH = 'http://localhost/ninaverse';
+    //relativna putanja radi
     const BASE_PATH = '/ninaverse';
     public static function url($url)
     {
+        //echo $url;
         // 1. Proveri da li URL sadrži dozvoljene znakove
-        if (!preg_match('/^[a-zA-Z0-9\-\/\_\.\?=&]+$/', $url)) {
-            return false; // URL sadrži nedozvoljene znakove
+//        if (!preg_match('/^[a-zA-Z0-9\-\/\_\.\?=&]+$/', $url)) {
+//            return false; // URL sadrži nedozvoljene znakove
+//        }
+        if (!preg_match('/^((http:\/\/localhost)|https:\/\/[a-zA-Z0-9\-\.]+)(\/[a-zA-Z0-9\-\/\_\.\?=&]*)?$/', $url)) {
+            return false; // URL nije validan
         }
 
         // 2. Proveri da li URL sadrži zlonamerni kod
@@ -21,8 +28,8 @@ class Validator
         }
 
         // 3. Sanitizuj URL
-        $sanitizedUrl = filter_var($url, FILTER_SANITIZE_URL);
-
+        //$sanitizedUrl = filter_var($url, FILTER_SANITIZE_URL);
+        $sanitizedUrl = filter_var(trim($url), FILTER_SANITIZE_URL);
         // 4. Proveri da li je URL validan
         if (!filter_var($sanitizedUrl, FILTER_VALIDATE_URL)) {
             return false; // URL nije validan
@@ -30,13 +37,10 @@ class Validator
 
         // 5. Proveri specifični obrazac za validaciju URL-a
         $pattern = sprintf(
-            '/^%s\/[a-zA-Z0-9\-_]+(\/(edit(\/\d{10})?|create(\/\d{10})?|delete(\/\d{10})?|view(\/\d{10})?)?)?$/',
-            preg_quote(self::BASE_PATH, '/')
+            //'/^(http:\/\/localhost|https:\/\/(?!localhost)[a-zA-Z0-9.-]+)%s(\/(chat|user)(\/[a-zA-Z0-9\-_]+(\/(edit(\/\d{10})?|create|delete(\/\d{10})?|view(\/\d{10})?)?)?)?)?$/',
+            '/^(http:\/\/localhost|https:\/\/(?!localhost)[a-zA-Z0-9.-]+)%s(\/(chat|user)?(\/[a-zA-Z0-9\-_]+(\/(edit(\/\d{10})?|create|delete(\/\d{10})?|view(\/\d{10})?)?)?)?)?$/',
+            preg_quote(self::BASE_PATH, '/') // Koristi samo relativnu putanju iz BASE_PATH
         );
-//        $pattern = sprintf(
-//            '/^%s\/(users|chats|messages)(\/(edit(\/\d{10})?|create(\/\d{10})?|delete(\/\d{10})?|view(\/\d{10})?)?)?$/',
-//            preg_quote(self::BASE_PATH, '/')
-//        );
 
         if (!preg_match($pattern, $sanitizedUrl)) {
             return false; // URL ne odgovara definisanom obrascu
