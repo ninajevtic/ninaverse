@@ -1,4 +1,3 @@
-<?php
 <div class="chat-container">
     <div class="conversations">
         <h3>Your Conversations</h3>

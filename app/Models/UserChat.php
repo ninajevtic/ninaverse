@@ -9,44 +9,44 @@ class UserChat
     // #region Properties
     /**
      * **UserChat ID**
+     *
      * @var int Unique identifier for the UserChat record
      */
     private int $id;
-
     /**
      * **Chat ID**
+     *
      * @var int Identifier of the associated chat
      */
     private int $chatId;
-
     /**
      * **User ID**
+     *
      * @var int Identifier of the associated user
      */
     private int $userId;
-
     /**
      * **Joined timestamp**
+     *
      * @var int Unix timestamp when the user joined the chat
      */
     private int $joinedAt;
-
     /**
      * **Soft delete timestamp**
+     *
      * @var int|null Timestamp of deletion, or null if not deleted
      */
     private ?int $deletedAt;
     // #endregion
-
     // #region Constructor
     /**
      * **Constructs a new UserChat instance.**
      *
-     * @param int           $id        **Unique identifier for the UserChat record**
-     * @param int           $chatId    **Identifier of the associated chat**
-     * @param int           $userId    **Identifier of the associated user**
-     * @param int           $joinedAt  **Unix timestamp when the user joined the chat**
-     * @param int|null      $deletedAt **Timestamp of deletion, or null if not deleted**
+     * @param int      $id        **Unique identifier for the UserChat record**
+     * @param int      $chatId    **Identifier of the associated chat**
+     * @param int      $userId    **Identifier of the associated user**
+     * @param int      $joinedAt  **Unix timestamp when the user joined the chat**
+     * @param int|null $deletedAt **Timestamp of deletion, or null if not deleted**
      */
     public function __construct(
         int $id,
@@ -62,7 +62,6 @@ class UserChat
         $this->deletedAt = $deletedAt;
     }
     // #endregion
-
     // #region Getters
     /**
      * **Returns the UserChat ID.**
@@ -115,7 +114,6 @@ class UserChat
         return $this->deletedAt;
     }
     // #endregion
-
     // #region Setters
     /**
      * **Sets the UserChat ID.**
