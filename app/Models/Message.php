@@ -35,9 +35,21 @@ class Message
     /**
      * **Sent timestamp**
      *
-     * @var int Unix timestamp indicating when the message was sent
+     * @var int Unix timestamp indicating when the message was created
      */
-    private int $sentAt;
+    private int $createdAt;
+    /**
+     * **Sent timestamp**
+     *
+     * @var int Unix timestamp indicating when the message was created
+     */
+    private int $createdAt;
+    /**
+     * **Update timestamp**
+     *
+     * @var int Unix timestamp indicating when the message was updated
+     */
+    private int $updatedAt;
     /**
      * **Soft delete timestamp**
      *
@@ -53,7 +65,8 @@ class Message
      * @param int           $chatId    **ID of the chat this message belongs to**
      * @param User          $user      **User instance of the message sender**
      * @param string        $content   **Content of the message**
-     * @param int           $sentAt    **Timestamp of when the message was sent**
+     * @param int           $createdAt    **Timestamp of when the message was created**
+     * @param int           $updatedAt **Timestamp of when the message was updated**
      * @param int|null $deletedAt **Timestamp of deletion if soft-deleted; null if active**
      */
     public function __construct(
@@ -61,14 +74,16 @@ class Message
         int $chatId,
         User $user,
         string $content,
-        int $sentAt,
+        int $createdAt,
+        int $updatedAt,
         ?int $deletedAt = null
     ) {
         $this->messageId = $messageId;
         $this->chatId = $chatId;
         $this->user = $user;
         $this->content = $content;
-        $this->sentAt = $sentAt;
+        $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt;
         $this->deletedAt = $deletedAt;
     }
     // #endregion
@@ -118,9 +133,19 @@ class Message
      *
      * @return int **Unix timestamp of when the message was sent**
      */
-    public function getSentAt(): int
+    public function getCreatedAt(): int
     {
-        return $this->sentAt;
+        return $this->createdAt;
+    }
+
+    /**
+     * **Returns the updated timestamp.**
+     *
+     * @return int **Unix timestamp of when the message was updated**
+     */
+    public function getUpdatedAt(): int
+    {
+        return $this->updatedAt;
     }
 
     /**
@@ -211,24 +236,24 @@ class Message
         $this->content = $content;
     }
 
-    /**
-     * **Sets the sent timestamp.**
-     *
-     * Validates the timestamp before setting it.
-     *
-     * @param int $sentAt **Unix timestamp of when the message was sent**
-     *
-     * @throw Exception if the sent timestamp is invalid
-     *
-     * @return void
-     */
-    public function setSentAt(int $sentAt): void
-    {
-        if (!Validator::timestamp($sentAt)) {
-            throw new Exception('Invalid Unix timestamp sent.');
-        }
-        $this->sentAt = $sentAt;
-    }
+//    /**
+//     * **Sets the sent timestamp.**
+//     *
+//     * Validates the timestamp before setting it.
+//     *
+//     * @param int $sentAt **Unix timestamp of when the message was sent**
+//     *
+//     * @throw Exception if the sent timestamp is invalid
+//     *
+//     * @return void
+//     */
+//    public function setSentAt(int $sentAt): void
+//    {
+//        if (!Validator::timestamp($sentAt)) {
+//            throw new Exception('Invalid Unix timestamp sent.');
+//        }
+//        $this->sentAt = $sentAt;
+//    }
 
     /**
      * **Sets the soft delete timestamp.**
