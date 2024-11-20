@@ -6,7 +6,8 @@
             "App\\": "app/",
             "App\\Services\\": "app/Services/",
             "App\\Exceptions\\": "app/Exceptions/",
-            "Core\\": "core/"
+            "Core\\": "core/",
+            "Config\\": "config/"
         }
     },
     "authors": [

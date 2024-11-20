@@ -4,18 +4,66 @@ namespace App\Controllers;
 
 use App\Services\UserService;
 use App\Services\ChatService;
+use Core\DocumentManager;
 
 class UserController
 {
     private UserService $userService;
     private ChatService $chatService;
 
+    private DocumentManager $documentManager;
+
     public function __construct()
     {
         $this->userService = new UserService();
         $this->chatService = new ChatService();
+        $this->documentManager = new DocumentManager();
     }
 
+    public function index()
+    {
+        $users = $this->userService->index();
+        // Prikazati korisnike u pogledu ili vratiti kao JSON
+        $this->documentManager->loadComponent('user');
+        return ['status' => 'success', 'message' => 'User updated successfully'];
+    }
+
+    public function show(int $id)
+    {
+        $user = $this->userService->show($id);
+        // Prikazati korisnika ili vratiti kao JSON
+    }
+
+    public function store()
+    {
+        $data = $_POST; // Ili koristiti Request objekat
+        $newUserId = $this->userService->store($data);
+        // Preusmeriti ili vratiti odgovor
+    }
+
+    public function update(int $id)
+    {
+        $data = $_POST; // Ili koristiti Request objekat
+        $this->userService->update($id, $data);
+        // Preusmeriti ili vratiti odgovor
+        // Obrada za PUT (ažuriranje korisnika)
+        // Implementirajte logiku ažuriranja
+
+        return ['status' => 'success', 'message' => 'User updated successfully'];
+    }
+
+    public function destroy(int $id)
+    {
+        $this->userService->destroy($id);
+        // Preusmeriti ili vratiti odgovor
+    }
+
+
+    public function login()
+    {
+        $this->documentManager->loadComponent('login', ['csrfToken' => $_SESSION['csrf_token']]);
+        // Preusmeriti ili vratiti odgovor
+    }
     public function action(array $data)
     {
         $method = $_SERVER['REQUEST_METHOD'];
@@ -32,8 +80,6 @@ class UserController
                 throw new \Exception("Unsupported HTTP method");
         }
     }
-
-
     public function create(array $data) {
         // Validacija podataka
         $name = $data['name'] ?? null;
@@ -87,6 +133,7 @@ class UserController
         }
     }
 
+    //samo admin
     public function delete($data) {
         $userId = $data['user_id'] ?? null;
 
@@ -128,13 +175,13 @@ class UserController
         return ['status' => 'success', 'data' => 'User data here'];
     }
 
-    private function update(array $data)
-    {
-        // Obrada za PUT (ažuriranje korisnika)
-        // Implementirajte logiku ažuriranja
-
-        return ['status' => 'success', 'message' => 'User updated successfully'];
-    }
+//    private function update(array $data)
+//    {
+//        // Obrada za PUT (ažuriranje korisnika)
+//        // Implementirajte logiku ažuriranja
+//
+//        return ['status' => 'success', 'message' => 'User updated successfully'];
+//    }
 
     public function createChatForUser(int $userId, array $chatData)
     {

@@ -2,12 +2,14 @@
 
 namespace Core;
 
+use Config\DomainConfig;
+
 class Validator
 {
     //sa ovim ne radi
     //const BASE_PATH = 'http://localhost/ninaverse';
     //relativna putanja radi
-    const BASE_PATH = '/ninaverse';
+    //const BASE_PATH = '/ninaverse';
     public static function url($url)
     {
         //echo $url;
@@ -39,7 +41,8 @@ class Validator
         $pattern = sprintf(
             //'/^(http:\/\/localhost|https:\/\/(?!localhost)[a-zA-Z0-9.-]+)%s(\/(chat|user)(\/[a-zA-Z0-9\-_]+(\/(edit(\/\d{10})?|create|delete(\/\d{10})?|view(\/\d{10})?)?)?)?)?$/',
             '/^(http:\/\/localhost|https:\/\/(?!localhost)[a-zA-Z0-9.-]+)%s(\/(chat|user)?(\/[a-zA-Z0-9\-_]+(\/(edit(\/\d{10})?|create|delete(\/\d{10})?|view(\/\d{10})?)?)?)?)?$/',
-            preg_quote(self::BASE_PATH, '/') // Koristi samo relativnu putanju iz BASE_PATH
+            //preg_quote(self::BASE_PATH, '/') // Koristi samo relativnu putanju iz BASE_PATH
+            preg_quote(DomainConfig::$BASE_PATH, '/') // Koristi samo relativnu putanju iz BASE_PATH
         );
 
         if (!preg_match($pattern, $sanitizedUrl)) {

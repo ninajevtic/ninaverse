@@ -9,24 +9,24 @@
             <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                 <form action="<?= $documentManager->generateUrl('/login') ?>" method="POST">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
-                    <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
-                        <p class="lead fw-normal mb-0 me-3">Sign in with</p>
-                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-floating mx-1">
-                            <i class="fab fa-facebook-f"></i>
-                        </button>
-
-                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-floating mx-1">
-                            <i class="fab fa-twitter"></i>
-                        </button>
-
-                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-floating mx-1">
-                            <i class="fab fa-linkedin-in"></i>
-                        </button>
-                    </div>
-
-                    <div class="divider d-flex align-items-center my-4">
-                        <p class="text-center fw-bold mx-3 mb-0">Or</p>
-                    </div>
+<!--                    <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">-->
+<!--                        <p class="lead fw-normal mb-0 me-3">Sign in with</p>-->
+<!--                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-floating mx-1">-->
+<!--                            <i class="fab fa-facebook-f"></i>-->
+<!--                        </button>-->
+<!---->
+<!--                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-floating mx-1">-->
+<!--                            <i class="fab fa-twitter"></i>-->
+<!--                        </button>-->
+<!---->
+<!--                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-floating mx-1">-->
+<!--                            <i class="fab fa-linkedin-in"></i>-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!---->
+<!--                    <div class="divider d-flex align-items-center my-4">-->
+<!--                        <p class="text-center fw-bold mx-3 mb-0">Or</p>-->
+<!--                    </div>-->
 
                     <!-- Email input -->
                     <div data-mdb-input-init class="form-outline mb-4">

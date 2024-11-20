@@ -9,8 +9,9 @@ use Core\DocumentManager;
 
 class ChatController
 {
-    private $chatService;
-    private $userService;
+    private ChatService $chatService;
+    private UserService $userService;
+    private DocumentManager $documentManager;
 
     public function __construct()
     {
@@ -21,8 +22,9 @@ class ChatController
 
     public function index()
     {
+        echo 'chatic';
         //$chats = $this->chatService->getChatsByUserId($_SESSION['user_id']);
-        $users = $this->userService->getUsers();
+        //$users = $this->userService->getUsers();
 //        $documentManager = new DocumentManager();
 //        $documentManager->render('chat', [
 //            //'chats' => $chats,
@@ -32,7 +34,7 @@ class ChatController
 //        $documentManager->render('login', [
 ////            'csrfToken' => $_SESSION['csrf_token']
 //        ]);
-        $this->documentManager->loadComponent('login', ['csrfToken' => $_SESSION['csrf_token']]);
+        //$this->documentManager->loadComponent('login', ['csrfToken' => $_SESSION['csrf_token']]);
     }
 
     public function loadMoreConversations()

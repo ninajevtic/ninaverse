@@ -1,8 +1,10 @@
 <?php
 
-namespace Core;
+namespace archive;
 
 use App\Exceptions\RouteNotFoundException;
+
+use function Core\base_path;
 
 class Router2
 {

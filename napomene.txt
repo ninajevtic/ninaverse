@@ -109,3 +109,34 @@ Control
 Component (Plugin, Module)
 Theme
 templates
+
+use App\Services\ChatService;
+use App\Services\MessageService;
+
+// Kreiranje servisa
+$chatService = new ChatService();
+$messageService = new MessageService();
+
+// Kreiranje novog chata
+$newChatId = $chatService->store(['name' => 'Team Meeting']);
+
+// Dodavanje poruke u chat
+$newMessageId = $messageService->store([
+    'chat_id' => $newChatId,
+    'sender_id' => 1,
+    'content' => 'Hello, team!'
+]);
+
+// Dohvatanje svih poruka iz chata
+$messages = $messageService->getMessagesByChat($newChatId);
+
+// Ispis poruka
+foreach ($messages as $message) {
+    echo $message['content'] . "\n";
+}
+
+// Dohvatanje svih chatova
+$chats = $chatService->index();
+foreach ($chats as $chat) {
+    echo $chat['name'] . "\n";
+}

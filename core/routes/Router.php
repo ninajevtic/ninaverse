@@ -1,30 +1,57 @@
 <?php
 
-namespace Core;
+namespace Core\routes;
+
+use Config\DomainConfig;
+use Core\Validator;
 
 class Router
 {
     private $routes = [];
 
-    public function addRoute(string $method, string $uri, string $controllerClass, string $action): void
+    /**
+     * Učitavanje ruta iz fajla.
+     *
+     * @param string $filePath Putanja do fajla sa rutama.
+     *
+     * @return void
+     * @throws \Exception Ako fajl sa rutama ne postoji.
+     */
+    public function loadRoutes(string $filePath): void
     {
+        if (!file_exists($filePath)) {
+            throw new \Exception("Routes file not found: " . $filePath);
+        }
+        // Dostupnost $this unutar fajla
+        $router = $this;
+        // Uključivanje fajla sa rutama
+        require $filePath;
+    }
+
+    public function register(
+        string $method,
+        string $uri,
+        string $controllerClass,
+        string $action
+    ): void {
         $this->routes[] = [
-            'uri'        => $uri,
+            'uri' => $uri,
             'controller' => $controllerClass, // Store class name
-            'action'     => $action,
-            'method'     => strtoupper($method)
+            'action' => $action,
+            'method' => strtoupper($method)
         ];
     }
 
     public function generateFullUrl(string $relativePath): string
     {
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'];
-
         // Generišite apsolutni URL
         return $protocol . '://' . $host . $relativePath;
     }
-    public function route()
+
+    public function dispatch()
     {
         // Validacija URI-ja
         $url = $this->generateFullUrl($_SERVER['REQUEST_URI']);
@@ -32,14 +59,13 @@ class Router
             $this->abort(400); // Bad Request ako URL nije validan
         }
         $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
-        $method =  $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
-
+        $method = $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
         foreach ($this->routes as $route) {
-//            echo $route['uri'].PHP_EOL;
-//            echo $uri.PHP_EOL;
-//            echo $route['method'].PHP_EOL;
-//            echo $method.PHP_EOL;//die();
-            if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
+            if ($route['uri'] === $uri
+                && $route['method'] === strtoupper(
+                    $method
+                )
+            ) {
                 $controllerClass = $route['controller'];
                 $action = $route['action'];
                 if (class_exists($controllerClass)) {
@@ -54,7 +80,6 @@ class Router
                 }
             }
         }
-
         $this->abort(404); // Route not found
     }
 
@@ -63,7 +88,6 @@ class Router
         http_response_code($code);
         //404.php;
         $viewPath = __DIR__ . "/views/errors/{$code}.php";
-
         if (file_exists($viewPath)) {
             require $viewPath;
         } else {

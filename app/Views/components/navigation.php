@@ -1,7 +1,7 @@
 <section class="w-100 contrasting-bg p-4">
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
+            <a class="navbar-brand" href="#">NinaVerse</a>
             <button data-mdb-collapse-init="" class="navbar-toggler collapsed"
                     type="button" data-mdb-target="#navbarColor02"
                     aria-controls="navbarColor02" aria-expanded="false"

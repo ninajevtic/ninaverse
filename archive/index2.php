@@ -6,7 +6,7 @@
 //    exit;
 //}
 use Core\DocumentManager;
-use Core\Router;
+use Core\routes\Router;
 
 // Pokretanje sesije
 session_start();

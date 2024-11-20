@@ -65,7 +65,7 @@ class DocumentManager
 
             // Učitaj layout i umetni sadržaj
             //include __DIR__ . '/../views/layout.php';
-            include __DIR__ . '/../app/Views/layout.php';
+            include __DIR__ . '/../app/Views/theme/layout.php';
         } else {
             echo "Template not found: " . $templatePath;
         }
