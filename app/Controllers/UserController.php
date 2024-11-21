@@ -4,12 +4,24 @@ namespace App\Controllers;
 
 use App\Services\UserService;
 use App\Services\ChatService;
-use Core\DocumentManager;
+use App\Views\LoginView;
+use App\Views\Theme;
+use App\Modules\LoginTheme;
+use App\Views\Module;
+use App\Views\Plugin;
+use App\Views\Renderer;
+
+use App\Views\TemplateEngine;
+//use App\Views\DocumentManager;
+//use Core\DocumentManager;
 
 class UserController
 {
+    private $renderer;
     private UserService $userService;
     private ChatService $chatService;
+    private TemplateEngine $engine;
+    //protected LoginView $loginView;
 
     private DocumentManager $documentManager;
 
@@ -17,7 +29,11 @@ class UserController
     {
         $this->userService = new UserService();
         $this->chatService = new ChatService();
-        $this->documentManager = new DocumentManager();
+        $this->engine = new TemplateEngine();
+        //$this->renderer = new Renderer();
+        //$this->documentManager = new DocumentManager();
+        //$this->documentManager = new DocumentManager(new TemplateEngine());
+        //$this->loginView = new LoginView();
     }
 
     public function index()
@@ -61,8 +77,31 @@ class UserController
 
     public function login()
     {
-        $this->documentManager->loadComponent('login', ['csrfToken' => $_SESSION['csrf_token']]);
-        // Preusmeriti ili vratiti odgovor
+
+        // 1. Kreiraj instancu LoginTheme
+        $theme = new \App\Views\Modules\LoginTheme("LoginTheme");
+
+        // 2. Pozovi process da inicijalizuje pozicije
+        $theme->process();
+        //echo '<pre>Positions in LoginTheme after process:</pre>';
+        //print_r($theme->getPositions());
+
+        // 3. Kreiraj LoginFormModule
+        $loginFormModule = new \App\Views\Modules\LoginFormModule("LoginForm");
+
+        // 4. Procesiraj formu
+        $loginFormModule->process();
+
+        // 5. Dodeli renderovani HTML poziciji "main"
+        $theme->setPositionValue("main", $loginFormModule->render());
+
+        // 6. Registruj komponente i generiši HTML
+        $this->engine->registerComponent($theme);
+        $this->engine->registerComponent($loginFormModule);
+
+        echo $this->engine->generate($theme);
+        //$this->documentManager->loadComponent('login', ['csrfToken' => $_SESSION['csrf_token']]);
+
     }
     public function action(array $data)
     {

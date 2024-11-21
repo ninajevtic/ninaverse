@@ -16,15 +16,15 @@ class DocumentManager
         extract($data);
         $layoutPath = __DIR__ . '/../app/Views/layout.php';
         //if (file_exists($layoutPath)) {
-            //include $layoutPath;
+        //include $layoutPath;
         //} else {
-            include $templatePath; // Ako nema layout-a, samo prikazuje template
+        include $templatePath; // Ako nema layout-a, samo prikazuje template
         //}
         //if (file_exists($templatePath)) {
-            //extract($data);
+        //extract($data);
         // Uključuje osnovni layout
 
-            //include $templatePath;
+        //include $templatePath;
 //        } else {
 //            echo "Template not found: {$templatePath}";
 //        }

@@ -140,3 +140,4 @@ $chats = $chatService->index();
 foreach ($chats as $chat) {
     echo $chat['name'] . "\n";
 }
+
