@@ -22,7 +22,7 @@ class ChatController
 
     public function index()
     {
-        echo 'chatic';
+        //echo 'chatic';
         //$chats = $this->chatService->getChatsByUserId($_SESSION['user_id']);
         //$users = $this->userService->getUsers();
 //        $documentManager = new DocumentManager();
@@ -34,7 +34,7 @@ class ChatController
 //        $documentManager->render('login', [
 ////            'csrfToken' => $_SESSION['csrf_token']
 //        ]);
-        //$this->documentManager->loadComponent('login', ['csrfToken' => $_SESSION['csrf_token']]);
+        $this->documentManager->loadComponent('login', ['csrfToken' => $_SESSION['csrf_token']]);
     }
 
     public function loadMoreConversations()

@@ -12,7 +12,7 @@ use App\Views\Plugin;
 use App\Views\Renderer;
 
 use App\Views\TemplateEngine;
-//use App\Views\DocumentManager;
+use App\Views\DocumentManager;
 //use Core\DocumentManager;
 
 class UserController
@@ -32,7 +32,8 @@ class UserController
         $this->engine = new TemplateEngine();
         //$this->renderer = new Renderer();
         //$this->documentManager = new DocumentManager();
-        //$this->documentManager = new DocumentManager(new TemplateEngine());
+       // $this->documentManager = new DocumentManager(new TemplateEngine());
+        $this->documentManager = new DocumentManager($this->engine);
         //$this->loginView = new LoginView();
     }
 
@@ -78,28 +79,35 @@ class UserController
     public function login()
     {
 
-        // 1. Kreiraj instancu LoginTheme
-        $theme = new \App\Views\Modules\LoginTheme("LoginTheme");
+        // Možete proslediti korisnika ili dodatne podatke, ako je potrebno
+        $html = $this->documentManager->renderLoginPage();
 
-        // 2. Pozovi process da inicijalizuje pozicije
-        $theme->process();
-        //echo '<pre>Positions in LoginTheme after process:</pre>';
-        //print_r($theme->getPositions());
+        echo $html;
+//        //1.nacin
+//        // 1. Kreiraj instancu LoginTheme
+//        $theme = new \App\Views\Modules\LoginTheme("LoginTheme");
+//
+//        // 2. Pozovi process da inicijalizuje pozicije
+//        $theme->process();
+//        //echo '<pre>Positions in LoginTheme after process:</pre>';
+//        //print_r($theme->getPositions());
+//
+//        // 3. Kreiraj LoginFormModule
+//        $loginFormModule = new \App\Views\Modules\LoginFormModule("LoginForm");
+//
+//        // 4. Procesiraj formu
+//        $loginFormModule->process();
+//
+//        // 5. Dodeli renderovani HTML poziciji "main"
+//        $theme->setPositionValue("main", $loginFormModule->render());
+//
+//        // 6. Registruj komponente i generiši HTML
+//        $this->engine->registerComponent($theme);
+//        $this->engine->registerComponent($loginFormModule);
+//
+//        echo $this->engine->generate($theme);
 
-        // 3. Kreiraj LoginFormModule
-        $loginFormModule = new \App\Views\Modules\LoginFormModule("LoginForm");
-
-        // 4. Procesiraj formu
-        $loginFormModule->process();
-
-        // 5. Dodeli renderovani HTML poziciji "main"
-        $theme->setPositionValue("main", $loginFormModule->render());
-
-        // 6. Registruj komponente i generiši HTML
-        $this->engine->registerComponent($theme);
-        $this->engine->registerComponent($loginFormModule);
-
-        echo $this->engine->generate($theme);
+        // 2. nacin
         //$this->documentManager->loadComponent('login', ['csrfToken' => $_SESSION['csrf_token']]);
 
     }

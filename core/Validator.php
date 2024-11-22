@@ -3,6 +3,7 @@
 namespace Core;
 
 use Config\DomainConfig;
+use Config\ControlConfig;
 
 class Validator
 {
@@ -38,11 +39,24 @@ class Validator
         }
 
         // 5. Proveri specifični obrazac za validaciju URL-a
+//        $pattern = sprintf(
+//            '/^(http:\/\/localhost|https:\/\/(?!localhost)[a-zA-Z0-9.-]+)%s(\/(chat|user)?(\/[a-zA-Z0-9\-_]+(\/(edit(\/\d{10})?|create|delete(\/\d{10})?|view(\/\d{10})?)?)?)?)?$/',
+//            preg_quote(DomainConfig::$BASE_PATH, '/') // Koristi samo relativnu putanju iz BASE_PATH
+//        );
+// Inicijalizuj ControlConfig ako je potrebno
+        ControlConfig::initialize();
+
+// Dobij kontrolere
+        $controllers = ControlConfig::getControllers();
+        //var_dump($controllers);
+
+// Generiši deo regex-a za kontrolere (chat|user|...)
+        $controllerPattern = implode('|', $controllers);
+// Kreiraj ceo regex koristeći sprintf
         $pattern = sprintf(
-            //'/^(http:\/\/localhost|https:\/\/(?!localhost)[a-zA-Z0-9.-]+)%s(\/(chat|user)(\/[a-zA-Z0-9\-_]+(\/(edit(\/\d{10})?|create|delete(\/\d{10})?|view(\/\d{10})?)?)?)?)?$/',
-            '/^(http:\/\/localhost|https:\/\/(?!localhost)[a-zA-Z0-9.-]+)%s(\/(chat|user)?(\/[a-zA-Z0-9\-_]+(\/(edit(\/\d{10})?|create|delete(\/\d{10})?|view(\/\d{10})?)?)?)?)?$/',
-            //preg_quote(self::BASE_PATH, '/') // Koristi samo relativnu putanju iz BASE_PATH
-            preg_quote(DomainConfig::$BASE_PATH, '/') // Koristi samo relativnu putanju iz BASE_PATH
+            '/^(http:\/\/localhost|https:\/\/(?!localhost)[a-zA-Z0-9.-]+)%s(\/(%s)?(\/[a-zA-Z0-9\-_]+(\/(edit(\/\d{10})?|create|delete(\/\d{10})?|view(\/\d{10})?)?)?)?)?$/',
+            preg_quote(DomainConfig::$BASE_PATH, '/'),
+            $controllerPattern // Uključi dinamički generisan deo za kontrolere
         );
 
         if (!preg_match($pattern, $sanitizedUrl)) {
