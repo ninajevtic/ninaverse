@@ -7,6 +7,27 @@ use Config\ControlConfig;
 
 class Validator
 {
+    public static function validate($value, array $rules): bool
+    {
+        foreach ($rules as $rule => $params) {
+            $isValid = match ($rule) {
+                'string' => self::string($value, $params['min'] ?? 1, $params['max'] ?? INF),
+                'numeric' => self::numeric($value, $params['min'] ?? null, $params['max'] ?? null),
+                'email' => self::email($value),
+                'url' => self::url($value),
+                'boolean' => self::boolean($value),
+                'regex' => self::regex($value, $params['pattern']),
+                default => true,
+            };
+
+            if (!$isValid) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     //sa ovim ne radi
     //const BASE_PATH = 'http://localhost/ninaverse';
     //relativna putanja radi

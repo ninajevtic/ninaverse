@@ -1,45 +1,96 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MDB5 Example</title>
-    <link href="node_modules/mdb-ui-kit/css/mdb.min.css" rel="stylesheet"> <!-- Uključi MDB CSS -->
+    <title>Basic HTML Layout</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header, footer {
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+        }
+
+        section {
+            flex: 1;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        section:not(:last-child) {
+            border-right: none;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button
-                class="navbar-toggler collapsed"
-                type="button"
-                data-mdb-toggle="collapse"
-                data-mdb-target="#navbarColor02"
-                aria-controls="navbarColor02"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-            <i class="fas fa-bars"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarColor02">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item active">
-                    <a class="nav-link" aria-current="page" href="/dashboard">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/profile">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/logout">Logout</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-<!-- Tvoj glavni JavaScript fajl -->
-<script type="module" src="public/js/main.js"></script>
+<header>
+    <h1>Header</h1>
+    <nav>
+        <ul>
+            <li><a href="#section1">Section 1</a></li>
+            <li><a href="#section2">Section 2</a></li>
+            <li><a href="#section3">Section 3</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <section>
+        <h2>Section 1</h2>
+        <p>Content for section 1</p>
+    </section>
+    <section>
+        <h2>Section 2</h2>
+        <p>Content for section 2</p>
+    </section>
+    <section>
+        <h2>Section 3</h2>
+        <p>Content for section 3</p>
+    </section>
+</main>
+<footer>
+    <p>Footer</p>
+</footer>
 </body>
 </html>

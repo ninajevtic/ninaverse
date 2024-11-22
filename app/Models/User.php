@@ -99,6 +99,14 @@ class User
         $this->deletedAt = $deletedAt;
     }
     // #endregion
+    // #region Validation Rules
+    // Pravila validacije za User model
+    public static array $rules = [
+        'name' => [
+            'string' => ['min' => 8, 'max' => 100],
+        ],
+    ];
+    // #endregion
     // #region Getters
     /**
      * **Returns the user ID.**
@@ -224,7 +232,10 @@ class User
      */
     public function setName(string $name): void
     {
-        if (!Validator::string($name, 8, 100)) {
+//        if (!Validator::string($name, 8, 100)) {
+//            throw new Exception('Invalid user name.');
+//        }
+        if (!Validator::validate($name, self::$rules['name'])) {
             throw new Exception('Invalid user name.');
         }
         $this->name = $name;
