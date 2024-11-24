@@ -1,105 +1,3 @@
-$id = 123; // Primer int ID iz baze
-$hashedId = hash('sha256', $id); // Koristi sha256 za hashiranje
-echo $hashedId; // Koristite heš za prikaz
-biblioteka hashids
-
-class User {
-    private int $id;
-    private string $name;
-    private ?string $email; // Nullable tip (dozvoljava null vrednosti)
-
-    public function __construct(int $id, string $name, ?string $email = null) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->email = $email;
-    }
-}
-
-validacija polja u tabeli kroz modele i kroz bazu
-
-// Primer sa jQuery-jem za slanje podataka o novom korisniku
-$.ajax({
-    url: '/path/to/ajax.php',
-    method: 'POST',
-    data: {
-        module: 'user',
-        action: 'create',
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        password: 'securepassword'
-    },
-    success: function(response) {
-        if (response.status === 'success') {
-            alert(response.message);
-        } else {
-            alert('Error: ' + response.message);
-        }
-    },
-    error: function(jqXHR) {
-        alert('AJAX request failed: ' + jqXHR.responseText);
-    }
-});
-Autentifikacija i CSRF Zaštita: Proverite da li je korisnik prijavljen i razmotrite dodavanje CSRF zaštite.
-
-Error Handling: Koristite try-catch blokove da hvatate izuzetke i odgovarate u formatu JSON sa odgovarajućim HTTP statusom.
-
-Response u JSON Formatu: Postavite header kao Content-Type: application/json i sve odgovore formatirajte kao JSON za konzistentnost.
-
-$.ajax({
-    url: '/path/to/ajax.php',
-    type: 'GET',
-    data: {
-        module: 'user',
-        action: 'getUserInfo',
-        user_id: 1
-    },
-    success: function(response) {
-        console.log(response);
-    }
-});
-
-$.ajax({
-    url: '/path/to/ajax.php',
-    type: 'POST',
-    data: {
-        module: 'user',
-        action: 'createUser',
-        name: 'John',
-        email: 'john@example.com'
-    },
-    success: function(response) {
-        console.log(response);
-    }
-});
-
-$.ajax({
-    url: '/path/to/ajax.php',
-    type: 'PUT',
-    data: JSON.stringify({
-        module: 'user',
-        action: 'updateUser',
-        user_id: 1,
-        name: 'John Doe Updated'
-    }),
-    contentType: 'application/json',
-    success: function(response) {
-        console.log(response);
-    }
-});
-
-$.ajax({
-    url: '/path/to/ajax.php',
-    type: 'DELETE',
-    data: {
-        module: 'user',
-        action: 'deleteUser',
-        user_id: 1
-    },
-    success: function(response) {
-        console.log(response);
-    }
-});
-
 www.ninaverse.com/user/edit/1234567890/username
 argumenti -user - edit -1234567890 param1/ username param2
 exlopde
@@ -110,34 +8,67 @@ Component (Plugin, Module)
 Theme
 templates
 
-use App\Services\ChatService;
-use App\Services\MessageService;
+rezime
+- ovaj projekat treba da se bazima na komponentama, aplikacija pocinje autoloaderom koji osigurava da se klase ucitavaju
+- aplikacija poziva ruter da utvrdi o kakvom url se radi, on treba da rasturi url na segmente,
+da utvrdi koja komponenta se zove i on vraca neki niz, ima neki niz koji je u sebi sadrzan, koji se zove segments
+i na red stupa document manager i kreira komponentu na osnovu stanja koji se nalazi u ruteru.
+u ruteru bi trebalo da se uradi redirekcija na odredjeni url, stranicu
+ti nikad neces redirektovati na url stranicu da sadrzi https, domen, tj. kada pricamo o url mislimo na linkove koji se nalaze u okviru applikacije
+link user/login, to je link
+ako ruter nije redirektovao erro, on ce da zavrsi sa stanjem koji ce sadzati sirovu verziju tog url tj. link i imamo prvi argument, drugi argument
+//ti argumenti su tip stranice i metod te stranice, u kontroleru moze da se napravi ako se te stranice ucitavaju iz baze
+//u smislu da  hoce da potvrdi u bazi da postoji neki link, vise kriterijuma za error:
+// nisam je podrzao konfiguracijom, 2.ne postoji klasa (document manager je zaduzen za ovaj deo jer on na osnovu stanja rutera ucita comonente), 3. nema u bazi
+kada se ucitaju komponente onda taj document manager u nekom trenutku pozove metod render theme, kao nosas svih stranica, tema u sebi ucitava stranicu kontrolu
+stranicu u sebi ucitavaju module koji su definisani pozicijama, sve ono sto se vizuelno kao neki template generise to stoji na nekoj poziciji
+// i u tom templajtu te komponente je definisana pozicija, ako otvoris theme tamo imas footer i header, sidebar i main content
+//i ti ces imati konfiguraciju da se kontrola kaci na main content na temi
+//vodi racuna da su knofiguracije izvan tih komponenti
+//kontrola ne zna gde ce ona biti iscrtana, ni jedan modul ne zna gde ce biti iscrtan, prema konfiguraciji na kraju negde spolja se odredjuje
+tako ce one znati kako da se upare i iscrtaju. moras da definises koja komponenta je dependent na drugu komponentu.
+// to znaci da document manager koji kreira te komponte on mora nekako da ima mogucnost da kad kreiras komponentu negde stavis
+naznaku da je druga komponenta potrebno da se izvrsi, sto znaci da ako imas vise modula, svaki od njih mora da ima id, jer kada
+se kreiraju on mora da ima id, aha, sve tipove ovog modula obradim i kada naidjem na neku komponetu onda on prvo nju obradi
+//modul dependecy u odnosu na plugin
+//.......
+//components/modules/footer/footer.php (ovo je glavni, ovo je komponenta)
+//components/modules/footer/view/
+//components/modules/footer/view/templates/templates_footer
+//components/modules/footer/view/js/
+//components/modules/footer/view/images/
+//components/modules/footer/view/css/
+//
+templejtu 2 vrste pozicija, jedno su pozicije a drugo labele -one su staticne
+footer Click on the link kao labela, hardkoduj
 
-// Kreiranje servisa
-$chatService = new ChatService();
-$messageService = new MessageService();
+//ajax radi sa post, ne s get request
+komponenta/metod/vrednost
 
-// Kreiranje novog chata
-$newChatId = $chatService->store(['name' => 'Team Meeting']);
 
-// Dodavanje poruke u chat
-$newMessageId = $messageService->store([
-    'chat_id' => $newChatId,
-    'sender_id' => 1,
-    'content' => 'Hello, team!'
-]);
-
-// Dohvatanje svih poruka iz chata
-$messages = $messageService->getMessagesByChat($newChatId);
-
-// Ispis poruka
-foreach ($messages as $message) {
-    echo $message['content'] . "\n";
-}
-
-// Dohvatanje svih chatova
-$chats = $chatService->index();
-foreach ($chats as $chat) {
-    echo $chat['name'] . "\n";
-}
-
+//metod neke komponente je post ili get, njena podfunkcionalnost
+//ako imamo komponentu user, njena metod je login, login, register
+//ako dispatch ne koristis za ajax, on je uvek get,
+//ti definises da li je regular ili ajax request
+//ti podrzavas odrejene stranice, ali to nema veze sa kontrolama, sa ajaxom.
+//ajax kontrole treba da budu takve da ce ona ispravno da radi bez obezira na kojoj se stranici nalazi
+//npr. ako imas neki modul i on treba da pozove sopstveni ajax, on ce da protumaci neki odredjeni rut koji si stavila
+//, ali ako se taj modul promeni na drugu stranicu, ili mu prosto promenis poziciju, ili imas modul na drugoj stranici ne treba tako da se hardkoduje
+//komponenta treba da bude fleksibilna,
+//kada modul pokusava sam sebi da dovuce neke informacije, on treba da identifikuje gde se nalazi njegov ajax fajl,
+//gde si definisala te funkcionalnosti, to nije nesto sto se definise rutom, moze da se hardkoduje, ali bolje je da on zna gde mora da se nalazi
+// gde je njegova definici, treba da imas strukturu definiscije komponenata, definicije modula i onda u tom modulu fajl koji se zove ajax npr.
+//koristi isti fajl koji definise komponentu ili poseban fajl ajax_imekomponente i u tom fajlu imas metode tog ajaxa
+//view ne treba da se ucitava kada je nesto error ili da se ispisuje neka poruka ne ekranu sa echo,
+//i da posle toga ubija izvrsavanje, ne tako, zato sto user pozove metod i dobije error ekran, pa pozove drugu rutu pa dobije error
+//...za 1001 kobinaciju dobije jednu istu stranicu, to ne treba da se desi
+//odredjeni sadrzaj aplikacije moze da se dobije samo za odredjeni url
+// tvoja aplikacija treba da redirektuje na error
+//ne treba poseban view da ucitavas, vec da imas stranicu koja je kontrola
+//kontrola i kontroler nije isto
+//kontrola je tip stranice koji treba dase desi redirekcija i da ima error code, a ako nema onda je 404
+//i onda mi realizujemo svaku vrstu greske kao redirekciju na stranicu koja je greska
+//abort ne zvati vise puta, nego da bude exception i da ti za odredjene slucajeve bacis exeption
+// i kad ga bacis uhvatis exception code i redirektujes u catch i onda prosedis komponenti samo kod, ne poruku
+//jer use ne treba da zna detalje, cak i tip gresaka treba da predvidis samo 404 500 i 403, sve ostalo se svodi na generalni error
+// od descripcije error sama komponenta treba da izadje na kraj sa time

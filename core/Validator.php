@@ -5,6 +5,31 @@ namespace Core;
 use Config\DomainConfig;
 use Config\ControlConfig;
 
+//validacija za url nema tacaka i nema sleseva, ti treba da uzmes sve posle domena www.xxx.com/
+//expode url na segmente i protrcis kroz taj niz segmenata
+//i da se validira svaki segment sa prostim regresom koji moze da protumaci samo mala slova i brojevi, samo crtice, cak i ne donja crta
+//zlonamerni kod je nepropustim, ne trebada imas ni black listu nesto sto treba da proverava, nista od toga//
+//sanitaze url je dobro
+//sanitaze url dobijas tako sto filtriras svaki od segmenta i onda ga impolde sa crticama, ne filter var da se toliko oslonis, on je vise kao kontrola
+//filetr var validira url, a mi zelimo da validiramo segmente
+//razlikuj kontrole i kontrolere, kontrolere nam ne trebaju napravicemo samo jedan za ajax koji ce da ucitava kontrole
+//ne treba to da radis u validatoru, da pozivas staticki metod configcontrol
+//url ne moze da se validira na osnovu klasa koje imas zastupljene i u njima da trazis edit create i delete kljucne rece
+//url treba da bude kombinacija brojeva, malis slova, crtica i slesa, nema nista drugo
+//ne treba da se trim vrednost kada je string validan!!!pogotovo zbog duzine!!!
+// nema smisl za validaciju stringa ova funkcija
+//da li je nesto broj da je value i da li je numeric, moras da pitas specificne situacije, da li je broj u nekom rangu
+//da li je ceo broj, da li ima 2 decimale, da nema 0 ispred sebe
+//tip stringa treba da definises, tip je email, tip je user name, tip je adresa, tip je zip code, ne treba da pravis validator koji validira broj,
+//treba, ali ne na ovaj nacin
+//idealno bi bilo da ti imas svoj validator klasu gde ces ti definisati config, email i u nizu njegova patern, pa onda username i njegov patern
+//ti hoces da imas univerzalni mehanizam kako kreiras tipove , i onda validator pitas da li je user name to, da li je email to
+//da li je password i onda u konfiguraciji van samog validatora, validator je automatska klasa, njoj prosledjujes neki config
+//i u tom configu imas neki niz, ovo mi je rexer za username, email ovo mi je regrex za email, ovo je regrex za email
+//taj niz moze da ima pod nizove, da li su karakteri, da li je broj, da li je range
+//ti za svaki tip mozes da definises metod koji ce da ti validira, npr. za ajax metod, domen, json
+//metodi su sablonski, samo manji deo definicije tog tipa je to sto ti treba, da li je range, da li je broj, caracter i regularne expresije toga
+//sve ovo za pojadnostavljenje
 class Validator
 {
     public static function validate($value, array $rules): bool
